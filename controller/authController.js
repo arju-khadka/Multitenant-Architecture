@@ -3,11 +3,11 @@ const bcrypt = require("bcrypt")
 const jwt = require("jsonwebtoken")
 
 exports.registerUser = async(req,res)=>{
-    const {email,password,username} = req.body
+    const {email,password,name} = req.body
     await users.create({
         email,
         password : bcrypt.hashSync(password,8),
-        username
+        name
     })
     res.status(200).json({
         message : "User registered successfully"
@@ -30,6 +30,7 @@ exports.loginUser = async(req,res)=>{
 
         if(isPasswordAlsoMatched){
             const token = jwt.sign({id:doesUserExistOfEmail[0].id},"thisissecret")
+            res.cookie("token",token)
             res.status(200).json({
                 message : "User logged in success",
                 token
