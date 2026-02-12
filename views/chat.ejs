@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* General body styling */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #e0eafc, #cfdef3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Chat container */
+        .chat-container {
+            width: 400px;
+            max-width: 95%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            background-color: #ffffff;
+        }
+
+        /* Chat header */
+        .chat-header {
+            background: #6c5ce7;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Messages area */
+        #chat-messages {
+            flex: 1;
+            padding: 15px;
+            background-color: #f7f7f7;
+            overflow-y: auto;
+            height: 350px;
+        }
+
+        /* Form styling */
+        form {
+            display: flex;
+            border-top: 1px solid #ddd;
+            background-color: #fff;
+        }
+
+        /* Input field */
+        #messageInput {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            border-radius: 0;
+        }
+
+        /* Send button */
+        .send-button {
+            background: #6c5ce7;
+            border: none;
+            color: white;
+            padding: 0 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s ease;
+        }
+
+        .send-button:hover {
+            background: #341f97;
+        }
+
+        /* Smooth scroll */
+        #chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        #chat-messages::-webkit-scrollbar-thumb {
+            background-color: rgba(108, 92, 231, 0.5);
+            border-radius: 3px;
+        }
+
+        #chat-messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    </style>
+
+
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            Chat
+        </div>
+        <div id="chat-messages">
+
+        </div>
+        <form id="input-container">
+            <input type="text" name="message" id="messageInput" placeholder="Enter your message">
+            <button class="send-button">Send</button>
+        </form>
+    </div>
+    <script src="https://cdn.socket.io/4.8.3/socket.io.min.js" integrity="sha384-kzavj5fiMwLKzzD1f8S7TeoVIEi7uKHvbTA3ueZkrzYq75pNQUiUi6Dy98Q3fxb0" crossorigin="anonymous"></script>
+
+    <script>
+        var socket = io()
+        var message = document.getElementById("messageInput")
+        var form = document.getElementById("input-container")
+        var chatMessagesContainer = document.getElementById("chat-messages")
+
+        form.addEventListener("submit",(e)=>{
+            e.preventDefault()
+            if(message.value){
+                socket.emit("message",message.value)
+                message.value = ""
+            }
+        })
+
+        socket.on("broadCastMessage",(msg)=>{
+            const paragraph = document.createElement("p")
+                paragraph.textContent = msg
+                chatMessagesContainer.appendChild(paragraph)
+        })
+    </script>
+</body>
+</html>
